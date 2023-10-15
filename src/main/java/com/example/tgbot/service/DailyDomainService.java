@@ -18,7 +18,7 @@ public class DailyDomainService {
     private static final Logger logger = LoggerFactory.getLogger("com.example.tgbot.info");
 
     @Autowired
-    private DailyDomainRepository dailyDomainRepository; // Ваш репозиторий для работы с базой данных
+    private DailyDomainRepository dailyDomainRepository;
 
     @Value("${json.url}")
     private String jsonUrl;
