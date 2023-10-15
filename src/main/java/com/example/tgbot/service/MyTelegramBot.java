@@ -6,6 +6,8 @@ import com.example.tgbot.entities.PGMessage;
 import com.example.tgbot.entities.User;
 import com.example.tgbot.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -20,6 +22,8 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class MyTelegramBot extends TelegramLongPollingBot {
+    private static final Logger logger = LoggerFactory.getLogger("com.example.tgbot.info");
+
     final BotConfig botConfig;
     @Autowired
     private UserRepository userRepository;
@@ -64,8 +68,10 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
         try{
             execute(message);
+            logger.info("Succesfully message sending: " + chatId.toString() + " " + msg);
         } catch (TelegramApiException e){
-            e.printStackTrace();
+            deleteUser(chatId);
+            logger.error("An error has occurred: ", e);
         }
 
     }
@@ -87,5 +93,12 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         sendMessage(message.getChatId(), response);
         userRepository.save(user);
         pgMessageRepository.save(pgMessage);
+    }
+
+    public void deleteUser(Long chatId) {
+        User user = userRepository.findByChatId(chatId);
+        if (user != null) {
+            userRepository.delete(user);
+        }
     }
 }
