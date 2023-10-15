@@ -1,7 +1,6 @@
 package com.example.tgbot.service;
 
-import com.example.tgbot.DailyDomainRepository;
-import com.example.tgbot.UserRepository;
+import com.example.tgbot.repositories.DailyDomainRepository;
 import com.example.tgbot.entities.DailyDomain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

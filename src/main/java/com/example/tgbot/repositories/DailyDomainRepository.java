@@ -1,4 +1,4 @@
-package com.example.tgbot;
+package com.example.tgbot.repositories;
 
 import com.example.tgbot.entities.DailyDomain;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.example.tgbot.service;
 
-import com.example.tgbot.DailyDomainRepository;
-import com.example.tgbot.UserRepository;
+import com.example.tgbot.repositories.DailyDomainRepository;
+import com.example.tgbot.repositories.UserRepository;
 import com.example.tgbot.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
