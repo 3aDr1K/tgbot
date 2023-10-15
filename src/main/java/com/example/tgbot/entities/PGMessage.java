@@ -1,9 +1,14 @@
 package com.example.tgbot.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
+@Getter
+@Setter
 public class PGMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +19,11 @@ public class PGMessage {
     private User user;
 
     private String text;
+
     private Timestamp timestamp;
 
+    private String botResponse;
+/*
     public Long getId() {
         return id;
     }
@@ -47,4 +55,5 @@ public class PGMessage {
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
+*/
 }
