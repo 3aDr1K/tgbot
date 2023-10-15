@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -29,23 +30,21 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         this.botConfig = botConfig;
     }
 
-
     @Override
     public void onUpdateReceived(Update update) {
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findByChatId(update.getMessage().getChatId()));
 
-        if (update.getMessage() != null && update.getMessage().hasText()) {
-            User user = userRepository.findByChatId(update.getMessage().getChatId());
-            if (user == null) {
-               user = registerNewUserMsgPg(update.getMessage());
-                sendMessage(user.getChatId(), "Hello new user!");
-            }
-            else {
-                registerMsgPg(user, update.getMessage());
-                sendMessage(user.getChatId(), "Hello old user!");
-            }
-        } else {
-            System.out.println("Error on UpdateReceived.");
-        }
+        userOptional.ifPresentOrElse(
+                user -> {
+                    // Если пользователь существует
+                    processUserMessage(user, update.getMessage());
+                },
+                () -> {
+                    // Если пользователя нет
+                    User newUser = new User();
+                    processUserMessage(newUser, update.getMessage());
+                }
+        );
     }
 
     @Override
@@ -70,27 +69,10 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
 
     }
-    private User registerNewUserMsgPg(Message message) {
-        User user = new User();
+
+    private void processUserMessage(User user, Message message) {
         PGMessage pgMessage = new PGMessage();
-
-        pgMessage.setUser(user);
-        pgMessage.setText(message.getText());
-        pgMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
-
-        user.setChatId(message.getChatId());
-        user.setUsername(message.getChat().getUserName());
-        user.setLastMessageAt(new Timestamp(System.currentTimeMillis()));
-        user.setLastMessage(message.getText());
-
-        userRepository.save(user);
-        pgMessageRepository.save(pgMessage);
-
-        return user;
-    }
-    private void registerMsgPg(User user, Message message)
-    {
-        PGMessage pgMessage = new PGMessage();
+        String response = "Вы написали: " + message.getText() + " :)";
 
         user.setChatId(message.getChatId());
         user.setUsername(message.getChat().getUserName());
@@ -100,8 +82,9 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         pgMessage.setUser(user);
         pgMessage.setText(message.getText());
         pgMessage.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        pgMessage.setBotResponse(response);
 
-
+        sendMessage(message.getChatId(), response);
         userRepository.save(user);
         pgMessageRepository.save(pgMessage);
     }
