@@ -11,12 +11,12 @@ import java.util.List;
 @Service
 public class MessageReceiveService {
     @Autowired
-    private UserRepository userRepository; // Репозиторий для пользователей
+    private UserRepository userRepository;
     @Autowired
-    private DailyDomainRepository dailyDomainRepository; // Ваш репозиторий для доменов
+    private DailyDomainRepository dailyDomainRepository;
 
     @Autowired
-    private MyTelegramBot telegramBot; // Ваш Telegram бот
+    private MyTelegramBot telegramBot;
 
     public void sendRegistrationMessageToUsers() {
         List<User> registeredUsers = userRepository.findAll(); // Получаем всех зарегистрированных пользователей
