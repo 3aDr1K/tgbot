@@ -3,6 +3,8 @@ package com.example.tgbot.service;
 import com.example.tgbot.repositories.DailyDomainRepository;
 import com.example.tgbot.entities.DailyDomain;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.io.IOException;
 
 @Service
 public class DailyDomainService {
+
+    private static final Logger logger = LoggerFactory.getLogger("com.example.tgbot.info");
 
     @Autowired
     private DailyDomainRepository dailyDomainRepository; // Ваш репозиторий для работы с базой данных
@@ -31,8 +35,9 @@ public class DailyDomainService {
             for (DailyDomain domain : dailyDomains) {
                 dailyDomainRepository.save(domain);
             }
+            logger.info("Succesfully json-parse");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error in json parse: ", e);
         }
     }
     public void deleteAllDailyDomains() {
