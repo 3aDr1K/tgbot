@@ -14,14 +14,17 @@ import java.io.IOException;
 
 @Service
 public class DailyDomainService {
-
     private static final Logger logger = LoggerFactory.getLogger("com.example.tgbot.info");
 
-    @Autowired
-    private DailyDomainRepository dailyDomainRepository;
+    private final DailyDomainRepository dailyDomainRepository;
+    private final String jsonUrl;
 
-    @Value("${json.url}")
-    private String jsonUrl;
+    @Autowired
+    public DailyDomainService(DailyDomainRepository dailyDomainRepository, @Value("${json.url}") String jsonUrl) {
+        this.dailyDomainRepository = dailyDomainRepository;
+        this.jsonUrl = jsonUrl;
+    }
+
     public void fetchDataAndSaveToDatabase() {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -35,11 +38,12 @@ public class DailyDomainService {
             for (DailyDomain domain : dailyDomains) {
                 dailyDomainRepository.save(domain);
             }
-            logger.info("Succesfully json-parse");
+            logger.info("Successfully json-parse");
         } catch (IOException e) {
             logger.error("Error in json parse: ", e);
         }
     }
+
     public void deleteAllDailyDomains() {
         dailyDomainRepository.deleteAll();
     }

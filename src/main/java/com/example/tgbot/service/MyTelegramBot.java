@@ -24,16 +24,16 @@ import java.util.Optional;
 public class MyTelegramBot extends TelegramLongPollingBot {
     private static final Logger logger = LoggerFactory.getLogger("com.example.tgbot.info");
 
+
     final BotConfig botConfig;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MessageRepository pgMessageRepository;
+    private final UserRepository userRepository;
+    private final MessageRepository pgMessageRepository;
 
-    public MyTelegramBot(BotConfig botConfig){
+    public MyTelegramBot(BotConfig botConfig, UserRepository userRepository, MessageRepository pgMessageRepository){
         this.botConfig = botConfig;
+        this.userRepository = userRepository;
+        this.pgMessageRepository = pgMessageRepository;
     }
-
     @Override
     public void onUpdateReceived(Update update) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByChatId(update.getMessage().getChatId()));
